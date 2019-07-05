@@ -6,17 +6,24 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import co.paulfran.paulfranco.flappybird.sprites.Bird;
 
 
 public class GameManager extends SurfaceView implements SurfaceHolder.Callback{
 
     public MainThread thread;
+    private Bird bird;
 
     public GameManager(Context context, AttributeSet attributeSet) {
         super(context);
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
 
+        initGame();
+    }
+
+    private void initGame() {
+        bird = new Bird(getResources());
     }
 
     @Override
@@ -48,11 +55,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     public void update() {
-        System.out.println("GameManager update call");
+        //System.out.println("GameManager update call");
+
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+        bird.draw(canvas);
     }
 }
