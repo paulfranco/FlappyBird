@@ -16,11 +16,14 @@ public class Obstacle implements Sprite {
     private int height, width, separation, xPosition, speed, screenHeight, screenWidth, headHeight, headExtraWidth;
     private int obstacleMinPosition;
     private Bitmap image;
+    private ObstacleCallback callback;
 
-    public Obstacle(Resources resources, int screenHeight, int screenWidth) {
+    public Obstacle(Resources resources, int screenHeight, int screenWidth, ObstacleCallback callback) {
         image = BitmapFactory.decodeResource(resources, R.drawable.pipes);
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
+        this.callback = callback;
+        xPosition = screenWidth;
         width = (int) resources.getDimension(R.dimen.obstacle_width);
         speed = (int) resources.getDimension(R.dimen.obstacle_speed);
         headHeight = (int) resources.getDimension(R.dimen.head_height);
@@ -53,6 +56,11 @@ public class Obstacle implements Sprite {
 
     @Override
     public void update() {
+
+        xPosition -= speed;
+        if (xPosition <= 0 - width - 2*headExtraWidth) {
+            callback.obstacleOffScreen(this);
+        }
 
     }
 }
