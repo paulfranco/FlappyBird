@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import co.paulfran.paulfranco.flappybird.R;
@@ -37,7 +38,6 @@ public class Obstacle implements Sprite {
 
     }
 
-    // left off at 12:51
     @Override
     public void draw(Canvas canvas) {
         Rect bottomPipe = new Rect(xPosition + headExtraWidth, screenHeight - height, xPosition + width + headExtraWidth, screenHeight);
@@ -60,6 +60,15 @@ public class Obstacle implements Sprite {
         xPosition -= speed;
         if (xPosition <= 0 - width - 2*headExtraWidth) {
             callback.obstacleOffScreen(this);
+        } else {
+            ArrayList<Rect> positions = new ArrayList<>();
+            Rect bottomPosition = new Rect(xPosition, screenHeight - height - headHeight, xPosition + width + 2*headExtraWidth, screenHeight);
+            Rect topPosition = new Rect(xPosition, 0, xPosition + width + 2*headExtraWidth, screenHeight - height - headHeight - separation);
+
+            positions.add(bottomPosition);
+            positions.add(topPosition);
+
+            callback.updatePosition(this, positions);
         }
 
     }
