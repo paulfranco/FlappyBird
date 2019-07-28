@@ -16,6 +16,8 @@ import java.util.List;
 
 import co.paulfran.paulfranco.flappybird.sprites.Background;
 import co.paulfran.paulfranco.flappybird.sprites.Bird;
+import co.paulfran.paulfranco.flappybird.sprites.GameMessage;
+import co.paulfran.paulfranco.flappybird.sprites.GameOver;
 import co.paulfran.paulfranco.flappybird.sprites.Obstacle;
 import co.paulfran.paulfranco.flappybird.sprites.ObstacleManager;
 
@@ -23,13 +25,14 @@ import co.paulfran.paulfranco.flappybird.sprites.ObstacleManager;
 public class GameManager extends SurfaceView implements SurfaceHolder.Callback, GameManagerCallback{
 
     public MainThread thread;
-
-    private GameState gameState = GameState.PLAYING;
+    private GameState gameState = GameState.INITIAL;
 
     private Bird bird;
     private Background background;
     private DisplayMetrics dm;
     private ObstacleManager obstacleManager;
+    private GameOver gameOver;
+    private GameMessage gameMessage;
     private Rect birdPosition;
     private HashMap<Obstacle, List<Rect>> obstaclePositions = new HashMap<>();
 
@@ -46,16 +49,20 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     }
 
     private void initGame() {
+        birdPosition = new Rect();
+        obstaclePositions = new HashMap<>();
         bird = new Bird(getResources(), dm.heightPixels, this);
         background = new Background(getResources(), dm.heightPixels);
         obstacleManager = new ObstacleManager(getResources(), dm.heightPixels, dm.widthPixels, this);
+        gameOver = new GameOver(getResources(), dm.heightPixels, dm.widthPixels);
+        gameMessage = new GameMessage(getResources(), dm.heightPixels, dm.widthPixels);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if (thread.getState() == Thread.State.TERMINATED) {
-            thread = new MainThread(holder, this);
-        }
+//        if (thread.getState() == Thread.State.TERMINATED) {
+//            thread = new MainThread(holder, this);
+//        }
         thread.setRunning(true);
         thread.start();
     }
@@ -93,8 +100,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
 
     @Override
     public void draw(Canvas canvas) {
+        super.draw(canvas);
         if (canvas != null) {
-            super.draw(canvas);
             canvas.drawRGB(150, 255, 255);
             background.draw(canvas);
             switch (gameState) {
@@ -103,9 +110,16 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                     obstacleManager.draw(canvas);
                     calculateCollision();
                     break;
+
+                case INITIAL:
+                    bird.draw(canvas);
+                    gameMessage.draw(canvas);
+                    break;
+
                 case GAME_OVER:
                     bird.draw(canvas);
                     obstacleManager.draw(canvas);
+                    gameOver.draw(canvas);
                     break;
             }
 
@@ -119,7 +133,15 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
             case PLAYING:
                 bird.onTouchEvent();
                 break;
+
+            case INITIAL:
+                bird.onTouchEvent();
+                gameState = GameState.PLAYING;
+                break;
+
             case GAME_OVER:
+                initGame();
+                gameState = GameState.INITIAL;
                 break;
         }
         bird.onTouchEvent();
