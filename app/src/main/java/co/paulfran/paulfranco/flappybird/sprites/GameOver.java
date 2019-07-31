@@ -22,7 +22,7 @@ public class GameOver implements Sprite {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(gameOver, screenWidth / 2 - gameOver.getHeight() / 2, screenHeight / 4, null);
+        canvas.drawBitmap(gameOver, screenWidth / 2 - gameOver.getWidth() / 2, screenHeight / 4, null);
     }
 
     @Override

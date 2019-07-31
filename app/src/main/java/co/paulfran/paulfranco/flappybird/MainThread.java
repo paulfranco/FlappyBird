@@ -40,20 +40,20 @@ public class MainThread extends Thread {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                if (canvas != null) {
+                if(canvas != null) {
                     try {
                         surfaceHolder.unlockCanvasAndPost(canvas);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
             }
-            timeMillis = System.nanoTime() - startTime / 1000000;
+
+            timeMillis = (System.nanoTime() - startTime) / 1000000;
             waitTime = targetTime - timeMillis;
 
             try {
-                if (waitTime > 0) {
+                if(waitTime > 0) {
                     sleep(waitTime);
                 }
             } catch (Exception e) {

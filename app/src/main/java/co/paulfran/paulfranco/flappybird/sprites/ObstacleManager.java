@@ -22,10 +22,9 @@ public class ObstacleManager implements ObstacleCallback{
 
     public ObstacleManager(Resources resources, int screenHeight, int screenWidth, GameManagerCallback callback) {
         this.resources = resources;
-        this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.screenWidth = screenWidth;
         this.callback = callback;
-
         interval = (int) resources.getDimension(R.dimen.obstacle_interval);
         speed = (int) resources.getDimension(R.dimen.obstacle_speed);
         obstacles.add(new Obstacle(resources, screenHeight, screenWidth, this));
@@ -33,13 +32,13 @@ public class ObstacleManager implements ObstacleCallback{
 
     public void update() {
         progress += speed;
-        if (progress > interval) {
+        if(progress > interval) {
             progress = 0;
             obstacles.add(new Obstacle(resources, screenHeight, screenWidth, this));
         }
         List<Obstacle> duplicate = new ArrayList<>();
         duplicate.addAll(obstacles);
-        for (Obstacle obstacle : duplicate) {
+        for (Obstacle obstacle: duplicate) {
             obstacle.update();
         }
     }
@@ -50,6 +49,7 @@ public class ObstacleManager implements ObstacleCallback{
         }
     }
 
+    @Override
     public void obstacleOffScreen(Obstacle obstacle) {
         obstacles.remove(obstacle);
         callback.removeObstacle(obstacle);

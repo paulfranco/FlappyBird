@@ -14,7 +14,9 @@ import co.paulfran.paulfranco.flappybird.R;
 
 public class Obstacle implements Sprite {
 
-    private int height, width, separation, xPosition, speed, screenHeight, screenWidth, headHeight, headExtraWidth;
+    private int height, width, separation, xPosition, speed;
+    private int screenHeight, screenWidth;
+    private int headHeight, headExtraWidth;
     private int obstacleMinPosition;
     private Bitmap image;
     private ObstacleCallback callback;
@@ -27,11 +29,10 @@ public class Obstacle implements Sprite {
         xPosition = screenWidth;
         width = (int) resources.getDimension(R.dimen.obstacle_width);
         speed = (int) resources.getDimension(R.dimen.obstacle_speed);
-        headHeight = (int) resources.getDimension(R.dimen.head_height);
         separation = (int) resources.getDimension(R.dimen.obstacle_separation);
+        headHeight = (int) resources.getDimension(R.dimen.head_height);
         headExtraWidth = (int) resources.getDimension(R.dimen.head_extra_width);
         obstacleMinPosition = (int) resources.getDimension(R.dimen.obstacle_min_position);
-
 
         Random random = new Random(System.currentTimeMillis());
         height = random.nextInt(screenHeight - 2 * obstacleMinPosition - separation) + obstacleMinPosition;
@@ -40,6 +41,7 @@ public class Obstacle implements Sprite {
 
     @Override
     public void draw(Canvas canvas) {
+
         Rect bottomPipe = new Rect(xPosition + headExtraWidth, screenHeight - height, xPosition + width + headExtraWidth, screenHeight);
         Rect bottomHead = new Rect(xPosition, screenHeight - height - headHeight, xPosition + width + 2*headExtraWidth, screenHeight - height);
         Rect topPipe = new Rect(xPosition + headExtraWidth, 0, xPosition + headExtraWidth + width, screenHeight - height - separation - 2*headHeight);
@@ -58,7 +60,7 @@ public class Obstacle implements Sprite {
     public void update() {
 
         xPosition -= speed;
-        if (xPosition <= 0 - width - 2*headExtraWidth) {
+        if(xPosition <= 0 - width - 2*headExtraWidth) {
             callback.obstacleOffScreen(this);
         } else {
             ArrayList<Rect> positions = new ArrayList<>();
@@ -67,7 +69,6 @@ public class Obstacle implements Sprite {
 
             positions.add(bottomPosition);
             positions.add(topPosition);
-
             callback.updatePosition(this, positions);
         }
 
