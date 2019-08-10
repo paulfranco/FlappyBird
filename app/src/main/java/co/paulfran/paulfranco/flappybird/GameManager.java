@@ -11,9 +11,14 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import co.paulfran.paulfranco.flappybird.sprites.Background;
 import co.paulfran.paulfranco.flappybird.sprites.Bird;
@@ -47,8 +52,14 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     private MediaPlayer mpHit;
     private MediaPlayer mpWing;
 
+    private InterstitialAd interstitialAd;
+
     public GameManager(Context context, AttributeSet attributeSet) {
         super(context);
+
+        interstitialAd = new InterstitialAd(context);
+        interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
         initSounds();
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
@@ -210,6 +221,27 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     mpDie.start();
+                }
+            });
+            loadInterstitial();
+        }
+    }
+
+    public void loadInterstitial() {
+
+        if (new Random().nextInt(10) < 2) {
+
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    interstitialAd.loadAd(new AdRequest.Builder().build());
+                    interstitialAd.setAdListener(new AdListener() {
+                        @Override
+                        public void onAdLoaded() {
+                            super.onAdLoaded();
+                            interstitialAd.show();
+                        }
+                    });
                 }
             });
         }
